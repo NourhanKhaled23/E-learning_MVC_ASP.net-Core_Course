@@ -49,7 +49,6 @@ namespace WebApplication1
                     Address = "123 Main St",
                     Email = "alice@example.com",
                     Image = "placeholder.svg",
-                    Grade = "A",
                     DeptId = csDept.DeptId
                 },
                 new Student
@@ -59,7 +58,6 @@ namespace WebApplication1
                     Address = "456 Oak Ave",
                     Email = "bob@example.com",
                     Image = "placeholder.svg",
-                    Grade = "B",
                     DeptId = mathDept.DeptId
                 },
                 new Student
@@ -69,7 +67,6 @@ namespace WebApplication1
                     Address = "789 Pine Rd",
                     Email = "carol@example.com",
                     Image = "placeholder.svg",
-                    Grade = "A+",
                     DeptId = csDept.DeptId
                 },
                 new Student
@@ -79,7 +76,6 @@ namespace WebApplication1
                     Address = "321 Elm St",
                     Email = "david@example.com",
                     Image = "placeholder.svg",
-                    Grade = "C",
                     DeptId = physicsDept.DeptId
                 },
                 new Student
@@ -89,7 +85,6 @@ namespace WebApplication1
                     Address = "654 Maple Dr",
                     Email = "eva@example.com",
                     Image = "placeholder.svg",
-                    Grade = "B+",
                     DeptId = mathDept.DeptId
                 }
             );

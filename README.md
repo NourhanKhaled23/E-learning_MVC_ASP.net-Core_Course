@@ -32,7 +32,6 @@ erDiagram
         string Email
         string Address
         string Image
-        string Grade
         int DeptId FK "Null if unassigned"
     }
     DEPARTMENT {
