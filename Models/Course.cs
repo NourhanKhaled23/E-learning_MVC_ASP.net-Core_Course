@@ -15,6 +15,8 @@ namespace WebApplication1.Models
 
         public string Topics { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Minimum degree required is mandatory")]
+        [Range(20, 100, ErrorMessage = "Minimum passing degree must be between 20 and 100")]
         public double MinDegree { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; } = [];
