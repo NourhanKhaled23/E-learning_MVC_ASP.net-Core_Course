@@ -84,7 +84,6 @@ namespace WebApplication1.Controllers
                     Age = model.Age,
                     Address = model.Address,
                     Email = model.Email,
-                    Grade = model.Grade,
                     Image = imagePath
                 };
 
@@ -112,7 +111,6 @@ namespace WebApplication1.Controllers
                 Address = student.Address,
                 Email = student.Email,
                 ExistingImage = student.Image,
-                Grade = student.Grade,
                 DeptId = student.DeptId
             };
             
@@ -134,7 +132,6 @@ namespace WebApplication1.Controllers
                 student.Age = model.Age;
                 student.Address = model.Address;
                 student.Email = model.Email;
-                student.Grade = model.Grade;
                 student.DeptId = model.DeptId;
 
                 if (model.ImageFile != null)

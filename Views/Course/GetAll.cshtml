@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Courses</h1>
-        <a asp-action="Create" class="btn btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Create New</a>
+        <a asp-action="Create" class="btn btn-theme shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Create New</a>
     </div>
 
     <div class="card shadow mb-4">
@@ -28,7 +28,7 @@
                                 <td><span class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</span></td>
                                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Topics)</td>
-                                <td><span class="badge bg-info text-dark">@Html.DisplayFor(modelItem => item.MinDegree)</span></td>
+                                <td><span class="badge bg-theme text-white">@Html.DisplayFor(modelItem => item.MinDegree)</span></td>
                             </tr>
                         }
                     </tbody>

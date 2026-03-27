@@ -4,105 +4,105 @@
     ViewData["Title"] = "Department Details";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h2>Department Details</h2>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center text-md-start">
+            <h2 class="fw-bold mb-3"><i class="fas fa-building text-theme me-2"></i> @Model.Name Department</h2>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                <span class="badge bg-light text-dark shadow-sm border p-2"><i class="fas fa-fingerprint text-theme me-1"></i> ID: @Model.DeptId</span>
+                <span class="badge bg-light text-dark shadow-sm border p-2"><i class="fas fa-map-marker-alt text-theme me-1"></i> @Model.Location</span>
+                <span class="badge bg-light text-dark shadow-sm border p-2"><i class="fas fa-phone text-theme me-1"></i> @Model.PhoneNumber</span>
+            </div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.DeptId" class="btn btn-theme px-4 shadow-sm"><i class="fas fa-edit me-1"></i>Edit Department</a>
+                <a asp-action="GetAll" class="btn btn-outline-secondary px-4 shadow-sm ms-2"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Department Information</h4>
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 30%;">ID</th>
-                        <td><span class="badge">@Model.DeptId</span></td>
-                    </tr>
-                    <tr>
-                        <th>Name</th>
-                        <td>@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <th>Location</th>
-                        <td>@Model.Location</td>
-                    </tr>
-                    <tr>
-                        <th>Phone Number</th>
-                        <td>@Model.PhoneNumber</td>
-                    </tr>
-                </table>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-theme text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i> Enrolled Students</h5>
+                    <span class="badge bg-white text-theme rounded-pill p-2">@Model.Students.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Students.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="px-4 py-3">ID</th>
+                                        <th class="py-3">Name</th>
+                                        <th class="py-3">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var student in Model.Students)
+                                    {
+                                        <tr>
+                                            <td class="px-4 text-muted">@student.Ssn</td>
+                                            <td class="fw-bold">@student.Name</td>
+                                            <td><a href="mailto:@student.Email" class="text-decoration-none text-muted">@student.Email</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-user-slash fs-1 text-muted mb-3 d-block"></i>
+                            <p class="text-muted mb-0">No students are currently enrolled in this department.</p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h4>Students (@Model.Students.Count)</h4>
-                @if (Model.Students.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th style="width: 15%;">SSN</th>
-                                    <th style="width: 45%;">Name</th>
-                                    <th style="width: 40%;">Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var student in Model.Students)
-                                {
+        
+        <div class="col-lg-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i> Assigned Instructors</h5>
+                    <span class="badge bg-white text-dark rounded-pill p-2">@Model.Instructors.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Instructors.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
                                     <tr>
-                                        <td>@student.Ssn</td>
-                                        <td>@student.Name</td>
-                                        <td>@student.Email</td>
+                                        <th class="px-4 py-3">ID</th>
+                                        <th class="py-3">Name</th>
+                                        <th class="py-3">Email</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <p class="text-muted">No students assigned to this department.</p>
-                }
+                                </thead>
+                                <tbody>
+                                    @foreach (var instructor in Model.Instructors)
+                                    {
+                                        <tr>
+                                            <td class="px-4 text-muted">@instructor.InsId</td>
+                                            <td class="fw-bold">@instructor.Name</td>
+                                            <td><a href="mailto:@instructor.Email" class="text-decoration-none text-muted">@instructor.Email</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-user-tie fs-1 text-muted mb-3 d-block"></i>
+                            <p class="text-muted mb-0">No instructors are assigned yet.</p>
+                        </div>
+                    }
+                </div>
             </div>
-            
-            <div class="col-md-6">
-                <h4>Instructors (@Model.Instructors.Count)</h4>
-                @if (Model.Instructors.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th style="width: 15%;">ID</th>
-                                    <th style="width: 45%;">Name</th>
-                                    <th style="width: 40%;">Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var instructor in Model.Instructors)
-                                {
-                                    <tr>
-                                        <td>@instructor.InsId</td>
-                                        <td>@instructor.Name</td>
-                                        <td>@instructor.Email</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <p class="text-muted">No instructors assigned to this department.</p>
-                }
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <a asp-action="GetAll" class="btn btn-secondary">
-                Back to Departments
-            </a>
         </div>
     </div>
 </div>

@@ -21,8 +21,6 @@ namespace WebApplication1.Models.ViewModels
         
         public string ExistingImage { get; set; } = string.Empty;
         
-        public string Grade { get; set; } = string.Empty;
-        
         [Display(Name = "Department")]
         public int? DeptId { get; set; }
     }

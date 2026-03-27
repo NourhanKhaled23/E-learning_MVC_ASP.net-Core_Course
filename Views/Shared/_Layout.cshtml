@@ -8,7 +8,19 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        body { background-color: #f8f9fc; }
+        :root {
+            --pink-base: #e83e8c;
+            --pink-hover: #c22971;
+            --gray-dark: #343a40;
+            --gray-light: #f8f9fc;
+        }
+        body { background-color: var(--gray-light); }
+        .text-theme { color: var(--pink-base) !important; }
+        .bg-theme { background-color: var(--pink-base) !important; color: white !important; }
+        .btn-theme { background-color: var(--pink-base); color: white; border: none; }
+        .btn-theme:hover { background-color: var(--pink-hover); color: white; }
+        .border-theme { border-color: var(--pink-base) !important; }
+        
         .navbar { box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15); }
         .footer { padding-top: 1.5rem; padding-bottom: 1.5rem; background-color: #fff; box-shadow: 0 -.15rem 1.75rem 0 rgba(58,59,69,.15); border-top: 1px solid #e3e6f0; }
         .dropdown-menu { border-radius: 0.35rem; }
@@ -19,8 +31,8 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4 static-top">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-graduation-cap fa-lg text-primary me-2"></i>
-                    <span class="fs-4 fw-bold text-primary">EduPlatform</span>
+                    <i class="fas fa-graduation-cap fa-lg text-theme me-2"></i>
+                    <span class="fs-4 fw-bold text-theme">EduPlatform</span>
                 </a>
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">

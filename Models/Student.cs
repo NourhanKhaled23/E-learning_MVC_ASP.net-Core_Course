@@ -20,7 +20,6 @@ namespace WebApplication1.Models
 
         public string Image { get; set; } = string.Empty;
 
-        public string Grade { get; set; } = string.Empty;
 
         public int? DeptId { get; set; }
 

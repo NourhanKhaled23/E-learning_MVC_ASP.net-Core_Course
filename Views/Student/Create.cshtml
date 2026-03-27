@@ -4,76 +4,61 @@
     ViewData["Title"] = "Create Student";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h2>Create New Student</h2>
-    </div>
-    <div class="card-body">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form asp-action="Create" method="post" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                    
-                    <div class="form-group mb-3">
-                        <label asp-for="Name" class="form-label">Student Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="Enter student full name" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container mt-4">
+    <div class="card shadow border-0 col-md-8 mx-auto bg-white">
+        <div class="card-header bg-theme text-white">
+            <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i> Register New Student</h4>
+        </div>
+        <div class="card-body p-5">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0"></div>
+                
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <label asp-for="Name" class="form-label fw-bold text-gray-800">Student Full Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+                        <span asp-validation-for="Name" class="text-danger small fw-semibold"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Age" class="form-label">Age</label>
-                        <input asp-for="Age" class="form-control" type="number" min="16" max="100" placeholder="Enter age" />
-                        <span asp-validation-for="Age" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label asp-for="Age" class="form-label fw-bold text-gray-800">Age</label>
+                        <input asp-for="Age" class="form-control" type="number" min="16" max="100" placeholder="E.g., 20" />
+                        <span asp-validation-for="Age" class="text-danger small fw-semibold"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Address" class="form-label">Address</label>
-                        <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter full address"></textarea>
-                        <span asp-validation-for="Address" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label fw-bold text-gray-800">Email Address</label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="student@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small fw-semibold"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Email" class="form-label">Email Address</label>
-                        <input asp-for="Email" class="form-control" type="email" placeholder="Enter email address" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                    <div class="col-md-12">
+                        <label asp-for="Address" class="form-label fw-bold text-gray-800">Home Address</label>
+                        <textarea asp-for="Address" class="form-control" rows="2" placeholder="Full residential physical address"></textarea>
+                        <span asp-validation-for="Address" class="text-danger small fw-semibold"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="ImageFile" class="form-label">Profile Image</label>
-                        <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
-                        <small class="form-text text-muted">Upload a profile image (optional)</small>
-                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    <div class="col-md-12">
+                        <label asp-for="ImageFile" class="form-label fw-bold text-gray-800">Profile Image</label>
+                        <input asp-for="ImageFile" class="form-control border-theme border-opacity-50" type="file" accept="image/*" />
+                        <small class="form-text text-muted"><i class="fas fa-camera me-1"></i> Optional display picture</small>
+                        <span asp-validation-for="ImageFile" class="text-danger small fw-semibold"></span>
                     </div>
 
-                    <div class="form-group mb-4">
-                        <label asp-for="Grade" class="form-label">Grade</label>
-                        <select asp-for="Grade" class="form-select">
-                            <option value="">Select Grade</option>
-                            <option value="A+">A+ (Excellent)</option>
-                            <option value="A">A (Very Good)</option>
-                            <option value="A-">A- (Good Plus)</option>
-                            <option value="B+">B+ (Good)</option>
-                            <option value="B">B (Above Average)</option>
-                            <option value="B-">B- (Average Plus)</option>
-                            <option value="C+">C+ (Average)</option>
-                            <option value="C">C (Below Average)</option>
-                            <option value="C-">C- (Poor Plus)</option>
-                            <option value="D">D (Poor)</option>
-                            <option value="F">F (Fail)</option>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold text-gray-800">Assign Department</label>
+                        <select asp-for="DeptId" class="form-select border-theme" asp-items="ViewBag.Departments">
+                            <option value="">-- No Department Assigned (Undeclared) --</option>
                         </select>
-                        <span asp-validation-for="Grade" class="text-danger"></span>
+                        <span asp-validation-for="DeptId" class="text-danger small fw-semibold"></span>
                     </div>
+                </div>
 
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary me-3">
-                            Create Student
-                        </button>
-                        <a asp-action="GetAll" class="btn btn-secondary">
-                            Back to List
-                        </a>
-                    </div>
-                </form>
-            </div>
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top">
+                    <a asp-action="GetAll" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-theme px-5 shadow-sm fw-bold">Register Student</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -17,6 +17,7 @@ namespace WebApplication1.Models
         [Display(Name = "Profile Image")]
         public IFormFile? ImageFile { get; set; }
 
-        public string Grade { get; set; } = string.Empty;
+        [Display(Name = "Department")]
+        public int? DeptId { get; set; }
     }
 }
