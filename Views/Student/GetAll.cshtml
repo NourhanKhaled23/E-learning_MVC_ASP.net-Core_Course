@@ -1,0 +1,72 @@
+@model IEnumerable<WebApplication1.Models.Student>
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2>All Students</h2>
+        <a asp-action="Create" class="btn btn-success">
+            Add New Student
+        </a>
+    </div>
+    <div class="card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+        
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>SSN</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td><span class="badge">@student.Ssn</span></td>
+                                <td>@student.Name</td>
+                                <td>@student.Age years</td>
+                                <td>@student.Address</td>
+                                <td>@student.Email</td>
+                                <td>
+                                    <span class="badge">@student.Grade</span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@student.Ssn"
+                                       class="btn btn-sm btn-info">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <h4>No Students Found</h4>
+                <p class="text-muted">Start by adding your first student to the system.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    Add First Student
+                </a>
+            </div>
+        }
+    </div>
+</div>

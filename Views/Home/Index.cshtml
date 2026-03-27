@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Learning MVC LABS</h1>
+    <p class="lead">A simple MVC application for learning ASP.NET Core</p>
+    
+    <div class="row mt-5">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Students</h5>
+                    <p class="card-text">Browse all students</p>
+                    <a asp-controller="Student" asp-action="GetAll" class="btn btn-primary">View Students</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Student</h5>
+                    <p class="card-text">Register new student</p>
+                    <a asp-controller="Student" asp-action="Create" class="btn btn-primary">Add Student</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Departments</h5>
+                    <p class="card-text">Browse all departments</p>
+                    <a asp-controller="Department" asp-action="GetAll" class="btn btn-primary">View Departments</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Department</h5>
+                    <p class="card-text">Create new department</p>
+                    <a asp-controller="Department" asp-action="Create" class="btn btn-primary">Add Department</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
