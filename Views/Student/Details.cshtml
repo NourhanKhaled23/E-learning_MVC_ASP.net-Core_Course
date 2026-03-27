@@ -43,7 +43,8 @@
                                 <tr>
                                     <th class="px-4 py-3">Course Name</th>
                                     <th class="py-3">Min Degree</th>
-                                    <th class="py-3 text-center">Student Degree</th>
+                                    <th class="py-3 text-center">Score</th>
+                                    <th class="py-3 text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,13 +52,12 @@
                                     @foreach(var item in Model.Courses) {
                                         <tr>
                                             <td class="px-4 fw-bold text-dark">@item.CourseName</td>
-                                            <td class="text-muted">@item.MinDegree</td>
+                                            <td class="text-muted">Min: @item.MinDegree</td>
+                                            <td class="text-center fw-bold text-theme">
+                                                @item.Degree / 100
+                                            </td>
                                             <td class="text-center">
-                                                @if(item.IsPassing) {
-                                                    <span class="badge bg-success px-3 py-2 fs-6">@item.Degree</span>
-                                                } else {
-                                                    <span class="badge bg-danger px-3 py-2 fs-6">@item.Degree</span>
-                                                }
+                                                <span class="badge @item.BadgeClass px-3 py-2 rounded-pill shadow-sm" style="min-width: 90px;">@item.StatusText</span>
                                             </td>
                                         </tr>
                                     }
