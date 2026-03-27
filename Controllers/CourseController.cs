@@ -85,24 +85,6 @@ namespace WebApplication1.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null) return NotFound();
-
-            var hasEnrollments = await _context.Enrollments.AnyAsync(e => e.CourseId == id);
-            if (hasEnrollments)
-            {
-                TempData["Error"] = "Cannot delete course with active enrollments.";
-                return RedirectToAction(nameof(GetAll));
-            }
-
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-            
-            TempData["Success"] = "Course deleted successfully!";
-            return RedirectToAction(nameof(GetAll));
         }
     }
 }

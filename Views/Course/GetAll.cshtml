@@ -40,9 +40,6 @@
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <a asp-action="Edit" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-theme"><i class="fas fa-edit"></i></a>
-                                        <form asp-action="Delete" asp-route-id="@item.CrsId" method="post" onsubmit="return confirm('Delete this course?')">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
