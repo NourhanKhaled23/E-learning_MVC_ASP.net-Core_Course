@@ -35,6 +35,13 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
+                var isDuplicate = await _context.Courses.AnyAsync(c => c.Name.ToLower() == model.Name.ToLower());
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError("Name", "A course with this name already exists.");
+                    return View(model);
+                }
+
                 var course = _mapper.Map<Course>(model);
                 _context.Courses.Add(course);
                 await _context.SaveChangesAsync();
@@ -43,6 +50,59 @@ namespace WebApplication1.Controllers
                 return RedirectToAction(nameof(GetAll));
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
+
+            var model = _mapper.Map<CourseViewModel>(course);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, CourseViewModel model)
+        {
+            if (id != model.CrsId) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                var isDuplicate = await _context.Courses.AnyAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CrsId != id);
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError("Name", "Another course with this name already exists.");
+                    return View(model);
+                }
+
+                var course = _mapper.Map<Course>(model);
+                _context.Update(course);
+                await _context.SaveChangesAsync();
+                
+                TempData["Success"] = "Course updated successfully!";
+                return RedirectToAction(nameof(GetAll));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
+
+            var hasEnrollments = await _context.Enrollments.AnyAsync(e => e.CourseId == id);
+            if (hasEnrollments)
+            {
+                TempData["Error"] = "Cannot delete course with active enrollments.";
+                return RedirectToAction(nameof(GetAll));
+            }
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = "Course deleted successfully!";
+            return RedirectToAction(nameof(GetAll));
         }
     }
 }

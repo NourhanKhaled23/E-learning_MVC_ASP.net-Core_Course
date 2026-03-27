@@ -1,0 +1,54 @@
+@model WebApplication1.Models.ViewModels.CourseViewModel
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0 col-md-8 mx-auto">
+        <div class="card-header bg-theme text-white">
+            <h4 class="mb-0">Edit Course: @Model.Name</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="CrsId" />
+
+                <div class="row g-3">
+                    <div class="col-md-6 form-floating mb-3">
+                        <input asp-for="Name" class="form-control" placeholder="Course Name" />
+                        <label asp-for="Name" class="ms-2">Course Name</label>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 form-floating mb-3">
+                        <input asp-for="MinDegree" class="form-control" placeholder="Minimum Degree" />
+                        <label asp-for="MinDegree" class="ms-2">Minimum Degree</label>
+                        <span asp-validation-for="MinDegree" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="col-12 form-floating mb-3">
+                        <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+                        <label asp-for="Description" class="ms-2">Description</label>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 form-floating mb-3">
+                        <input asp-for="Topics" class="form-control" placeholder="Topics (comma separated)" />
+                        <label asp-for="Topics" class="ms-2">Topics (comma separated)</label>
+                        <span asp-validation-for="Topics" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="GetAll" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-theme px-4">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

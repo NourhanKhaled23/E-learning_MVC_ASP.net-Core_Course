@@ -20,15 +20,31 @@
                             <th>@Html.DisplayNameFor(model => model.Description)</th>
                             <th>@Html.DisplayNameFor(model => model.Topics)</th>
                             <th>@Html.DisplayNameFor(model => model.MinDegree)</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
                         @foreach (var item in Model) {
                             <tr>
                                 <td><span class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</span></td>
                                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Topics)</td>
                                 <td><span class="badge bg-theme text-white">@Html.DisplayFor(modelItem => item.MinDegree)</span></td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-theme"><i class="fas fa-edit"></i></a>
+                                        <form asp-action="Delete" asp-route-id="@item.CrsId" method="post" onsubmit="return confirm('Delete this course?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
