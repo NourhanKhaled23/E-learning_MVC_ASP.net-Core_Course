@@ -4,76 +4,20 @@
     ViewData["Title"] = "Student Details";
 }
 
+@{
+    ViewBag.StudentSsn = Model.Ssn;
+}
+
 <div class="container mt-4">
     <div class="row">
-        <!-- Student Profile Card -->
+        <!-- Student Profile Card Partial -->
         <div class="col-md-4 mb-4">
-            <div class="card shadow border-0">
-                <div class="card-body text-center">
-                    <img src="~/images/@Model.Image" alt="@Model.Name" class="rounded-circle mb-3 border border-3 border-theme" style="width: 150px; height: 150px; object-fit: cover;"/>
-                    <h4 class="card-title fw-bold">@Model.Name</h4>
-                    <span class="badge bg-secondary mb-2">@Model.DepartmentName</span>
-                    
-                    <ul class="list-unstyled text-start mt-4 border-top pt-3">
-                        <li class="mb-2"><i class="fas fa-id-card text-muted me-2"></i> <strong>SSN:</strong> @Model.Ssn</li>
-                        <li class="mb-2"><i class="fas fa-envelope text-muted me-2"></i> <strong>Email:</strong> @Model.Email</li>
-                        <li class="mb-2"><i class="fas fa-map-marker-alt text-muted me-2"></i> <strong>Address:</strong> @Model.Address</li>
-                        <li class="mb-2"><i class="fas fa-calendar-alt text-muted me-2"></i> <strong>Age:</strong> @Model.Age</li>
-                    </ul>
-                    
-                    <div class="mt-4">
-                        <a asp-action="Edit" asp-route-id="@Model.Ssn" class="btn btn-theme px-4"><i class="fas fa-edit me-1"></i>Edit</a>
-                        <a asp-action="GetAll" class="btn btn-outline-secondary px-4"><i class="fas fa-arrow-left me-1"></i>Back</a>
-                    </div>
-                </div>
-            </div>
+            <partial name="_StudentProfileCard" model="Model" />
         </div>
 
-        <!-- Student Courses Details -->
+        <!-- Student Courses Details Partial -->
         <div class="col-md-8">
-            <div class="card shadow border-0 h-100">
-                <div class="card-header bg-theme text-white d-flex align-items-center justify-content-between">
-                    <h5 class="mb-0"><i class="fas fa-book-open me-2"></i> Enrolled Courses</h5>
-                    <a asp-controller="Enrollment" asp-action="Create" asp-route-id="@Model.Ssn" class="btn btn-sm btn-white text-theme fw-bold shadow-sm p-2"><i class="fas fa-plus-circle me-1"></i>Enroll in New Course</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="px-4 py-3">Course Name</th>
-                                    <th class="py-3">Min Degree</th>
-                                    <th class="py-3 text-center">Score</th>
-                                    <th class="py-3 text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if(Model.Courses.Any()) {
-                                    @foreach(var item in Model.Courses) {
-                                        <tr>
-                                            <td class="px-4 fw-bold text-dark">@item.CourseName</td>
-                                            <td class="text-muted">Min: @item.MinDegree</td>
-                                            <td class="text-center fw-bold text-theme">
-                                                @item.Degree / 100
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge @item.BadgeClass px-3 py-2 rounded-pill shadow-sm" style="min-width: 90px;">@item.StatusText</span>
-                                            </td>
-                                        </tr>
-                                    }
-                                } else {
-                                    <tr>
-                                        <td colspan="3" class="text-center py-5 text-muted">
-                                            <i class="fas fa-folder-open mb-3 fs-1 d-block text-grap-300"></i>
-                                            Student is not enrolled in any courses yet.
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <partial name="_EnrolledCoursesTable" model="Model.Courses" />
         </div>
     </div>
 </div>

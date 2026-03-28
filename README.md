@@ -1,6 +1,6 @@
-# 🎓 EduPlatform - E-Learning MVC Application
+# 🎓 Nourhan Tasks - E-Learning MVC Application
 
-Welcome to **EduPlatform**, a comprehensive E-Learning management system built from the ground up using **ASP.NET Core MVC**. This application serves as a complete learning laboratory implementing modern design patterns, robust backend architecture, and a dynamic, responsive user interface.
+Welcome to **Nourhan Tasks**, a comprehensive E-Learning management system built from the ground up using **ASP.NET Core MVC**. This application serves as a complete learning laboratory implementing modern design patterns, robust backend architecture, and a dynamic, responsive user interface.
 
 ## ✨ Key Features
 - **Complete CRUD Operations**: Manage Students, Departments, and Courses seamlessly with dedicated interfaces.
@@ -101,11 +101,3 @@ Follow these instructions to safely unpack and configure a local replica of this
    ```
    Open your browser to `https://localhost:XXXX/` *(check terminal)* and explore the platform!
 
----
-
-## 💡 Recommendations & Future Expansions
-
-Here are some suggested ways to further scale and elevate this project's bounds natively:
-- **Identity & Authentication 🔐:** Wrap controllers with `[Authorize]` attributes and implement ASP.NET Core Identity to manage Role-Based access control (Admin, Instructor, Student logins).
-- **Extensive UI Data-Tables 📊:** Embed data pagination, extensive searching, and asynchronous sorting via AJAX using libraries like `DataTables.net`.
-- **API Construction 💻:** Expose `Course` grades outwardly via Web API Endpoints `Controllers/Api` returning bare-bone JSON structures extending possibilities to external React/Angular dashboards!

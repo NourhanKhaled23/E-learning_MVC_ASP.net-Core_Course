@@ -1,0 +1,62 @@
+@model IEnumerable<WebApplication1.Models.ViewModels.StudentCourseViewModel>
+
+<div class="card shadow border-0 h-100">
+    <div class="card-header bg-theme text-white d-flex align-items-center justify-content-between py-3">
+        <h5 class="mb-0"><i class="fas fa-book-open me-2"></i> Enrolled Courses</h5>
+        <a asp-controller="Enrollment" asp-action="Create" asp-route-id="@ViewBag.StudentSsn" class="btn btn-sm btn-light text-theme fw-bold shadow-sm px-3 rounded-pill">
+            <i class="fas fa-plus-circle me-1"></i> Enroll in New Course
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="px-4 py-3 border-0">Course Name</th>
+                        <th class="py-3 border-0">Min Degree</th>
+                        <th class="py-3 text-center border-0">Score</th>
+                        <th class="py-3 text-center border-0">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="px-4">
+                                    <span class="fw-bold d-block text-dark lh-sm">@item.CourseName</span>
+                                    <small class="text-muted fs-xs">Level: @(item.MinDegree > 50 ? "Advanced" : "Fundamental")</small>
+                                </td>
+                                <td class="text-muted"><span class="badge bg-light text-muted border px-2 py-1">@item.MinDegree</span></td>
+                                <td class="text-center fw-bold text-theme">
+                                    <div class="progress h-px-4 bg-light shadow-sm" style="height: 6px;">
+                                        <div class="progress-bar bg-theme" role="progressbar" style="width: @(item.Degree)%" aria-valuenow="@item.Degree" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="mt-1 d-block">@item.Degree / 100</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge @item.BadgeClass px-3 py-2 rounded-pill shadow-sm" style="min-width: 90px;">@item.StatusText</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <div class="empty-state text-center py-5">
+                                    <div class="mb-3 text-muted">
+                                        <i class="fas fa-folder-open display-4 opacity-50"></i>
+                                    </div>
+                                    <p class="h5 mb-1">No Courses Enrolled</p>
+                                    <p class="text-muted small">Student is not enrolled in any courses yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

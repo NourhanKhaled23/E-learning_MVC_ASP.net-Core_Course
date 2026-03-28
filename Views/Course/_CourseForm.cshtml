@@ -1,0 +1,33 @@
+@model WebApplication1.Models.ViewModels.CourseViewModel
+
+<div class="row g-3">
+    <div class="col-md-6 form-floating mb-3">
+        <input asp-for="Name" class="form-control" placeholder="Course Name" />
+        <label asp-for="Name" class="ms-2">Course Name</label>
+        <span asp-validation-for="Name" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6 form-floating mb-3">
+        <input asp-for="MinDegree" class="form-control" placeholder="Pass Degree" />
+        <label asp-for="MinDegree" class="ms-2">Minimum Pass Degree</label>
+        <span asp-validation-for="MinDegree" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6 form-floating mb-3">
+        <input asp-for="FullDegree" class="form-control" placeholder="Full Degree" />
+        <label asp-for="FullDegree" class="ms-2">Course Total Degree</label>
+        <span asp-validation-for="FullDegree" class="text-danger small"></span>
+    </div>
+    
+    <div class="col-12 form-floating mb-3">
+        <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+        <label asp-for="Description" class="ms-2">Description</label>
+        <span asp-validation-for="Description" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12 form-floating mb-3">
+        <input asp-for="Topics" class="form-control" placeholder="Topics (comma separated)" />
+        <label asp-for="Topics" class="ms-2">Topics (comma separated)</label>
+        <span asp-validation-for="Topics" class="text-danger small"></span>
+    </div>
+</div>

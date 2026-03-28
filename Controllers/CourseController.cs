@@ -18,10 +18,23 @@ namespace WebApplication1.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(string search = "")
         {
-            var courses = await _context.Courses.ToListAsync();
+            var coursesQuery = _context.Courses.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                coursesQuery = coursesQuery.Where(c => c.Name.Contains(search) || c.Description.Contains(search));
+            }
+
+            var courses = await coursesQuery.ToListAsync();
             var model = _mapper.Map<List<CourseViewModel>>(courses);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_CourseTable", model);
+            }
+
             return View(model);
         }
 

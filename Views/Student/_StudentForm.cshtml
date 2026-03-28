@@ -1,0 +1,49 @@
+@model dynamic
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <label for="Name" class="form-label fw-bold text-gray-800">Student Name</label>
+        <input name="Name" id="Name" value="@Model.Name" class="form-control" placeholder="Enter full name" />
+        <span class="text-danger small fw-semibold field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label for="Age" class="form-label fw-bold text-gray-800">Age</label>
+        <input name="Age" id="Age" value="@Model.Age" class="form-control" type="number" min="16" max="100" placeholder="E.g., 20" />
+        <span class="text-danger small fw-semibold field-validation-valid" data-valmsg-for="Age" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label for="Email" class="form-label fw-bold text-gray-800">Email Address</label>
+        <input name="Email" id="Email" value="@Model.Email" class="form-control" type="email" placeholder="student@example.com" />
+        <span class="text-danger small fw-semibold field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="col-md-12">
+        <label for="Address" class="form-label fw-bold text-gray-800">Home Address</label>
+        <textarea name="Address" id="Address" class="form-control" rows="2" placeholder="Full residential physical address">@Model.Address</textarea>
+        <span class="text-danger small fw-semibold field-validation-valid" data-valmsg-for="Address" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="col-md-12">
+        <label for="DeptId" class="form-label fw-bold text-gray-800">Assign Department</label>
+        <select name="DeptId" id="DeptId" class="form-select border-theme">
+            <option value="">-- No Department Assigned (Undeclared) --</option>
+            @if (ViewBag.Departments != null)
+            {
+                foreach (var dept in (IEnumerable<SelectListItem>)ViewBag.Departments)
+                {
+                    if (Model.DeptId != null && Model.DeptId.ToString() == dept.Value)
+                    {
+                        <option value="@dept.Value" selected="selected">@dept.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@dept.Value">@dept.Text</option>
+                    }
+                }
+            }
+        </select>
+        <span class="text-danger small fw-semibold field-validation-valid" data-valmsg-for="DeptId" data-valmsg-replace="true"></span>
+    </div>
+</div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EduPlatform</title>
+    <title>@ViewData["Title"] - Nourhan Tasks</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -30,74 +30,17 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4 static-top">
-            <div class="container">
-                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-graduation-cap fa-lg text-theme me-2"></i>
-                    <span class="fs-4 fw-bold text-theme">EduPlatform</span>
-                </a>
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 fw-semibold">
-                        <li class="nav-item me-2">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-1 text-muted"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown me-2">
-                            <a class="nav-link dropdown-toggle" href="#" id="studentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-graduate me-1 text-muted"></i> Students
-                            </a>
-                            <ul class="dropdown-menu shadow border-0" aria-labelledby="studentsDropdown">
-                                <li><a class="dropdown-item" asp-controller="Student" asp-action="GetAll"><i class="fas fa-list me-2 text-muted"></i>All Students</a></li>
-                                <li><a class="dropdown-item" asp-controller="Student" asp-action="Create"><i class="fas fa-plus me-2 text-muted"></i>Add Student</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown me-2">
-                            <a class="nav-link dropdown-toggle" href="#" id="departmentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-building me-1 text-muted"></i> Departments
-                            </a>
-                            <ul class="dropdown-menu shadow border-0" aria-labelledby="departmentsDropdown">
-                                <li><a class="dropdown-item" asp-controller="Department" asp-action="GetAll"><i class="fas fa-list me-2 text-muted"></i>All Departments</a></li>
-                                <li><a class="dropdown-item" asp-controller="Department" asp-action="Create"><i class="fas fa-plus me-2 text-muted"></i>Add Department</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown me-2">
-                            <a class="nav-link dropdown-toggle" href="#" id="coursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-book me-1 text-muted"></i> Courses
-                            </a>
-                            <ul class="dropdown-menu shadow border-0" aria-labelledby="coursesDropdown">
-                                <li><a class="dropdown-item" asp-controller="Course" asp-action="GetAll"><i class="fas fa-list me-2 text-muted"></i>All Courses</a></li>
-                                <li><a class="dropdown-item" asp-controller="Course" asp-action="Create"><i class="fas fa-plus me-2 text-muted"></i>Add Course</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <partial name="_Navbar" />
     </header>
     
     <div class="container flex-grow-1">
         <main role="main" class="pb-3">
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
+            <partial name="_Notifications" />
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer mt-auto">
-        <div class="container text-center">
-            <span class="text-muted"><i class="fas fa-code me-1"></i> &copy; 2026 - EduPlatform - Built with ASP.NET Core MVC</span>
-        </div>
-    </footer>
+    <partial name="_Footer" />
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

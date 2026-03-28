@@ -19,6 +19,10 @@ namespace WebApplication1.Models
         [Range(20, 100, ErrorMessage = "Minimum passing degree must be between 20 and 100")]
         public double MinDegree { get; set; }
 
+        [Required(ErrorMessage = "Total course degree is required")]
+        [Range(1, 200, ErrorMessage = "Course total degree must be between 1 and 200")]
+        public double FullDegree { get; set; }
+
         public ICollection<Enrollment> Enrollments { get; set; } = [];
         public ICollection<CourseInstructor> CourseInstructors { get; set; } = [];
     }

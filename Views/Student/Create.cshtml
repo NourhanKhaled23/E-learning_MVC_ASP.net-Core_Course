@@ -14,44 +14,7 @@
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0"></div>
                 
                 <div class="row g-4">
-                    <div class="col-md-12">
-                        <label asp-for="Name" class="form-label fw-bold text-gray-800">Student Full Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="Enter full name" />
-                        <span asp-validation-for="Name" class="text-danger small fw-semibold"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Age" class="form-label fw-bold text-gray-800">Age</label>
-                        <input asp-for="Age" class="form-control" type="number" min="16" max="100" placeholder="E.g., 20" />
-                        <span asp-validation-for="Age" class="text-danger small fw-semibold"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Email" class="form-label fw-bold text-gray-800">Email Address</label>
-                        <input asp-for="Email" class="form-control" type="email" placeholder="student@example.com" />
-                        <span asp-validation-for="Email" class="text-danger small fw-semibold"></span>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label asp-for="Address" class="form-label fw-bold text-gray-800">Home Address</label>
-                        <textarea asp-for="Address" class="form-control" rows="2" placeholder="Full residential physical address"></textarea>
-                        <span asp-validation-for="Address" class="text-danger small fw-semibold"></span>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label asp-for="ImageFile" class="form-label fw-bold text-gray-800">Profile Image</label>
-                        <input asp-for="ImageFile" class="form-control border-theme border-opacity-50" type="file" accept="image/*" />
-                        <small class="form-text text-muted"><i class="fas fa-camera me-1"></i> Optional display picture</small>
-                        <span asp-validation-for="ImageFile" class="text-danger small fw-semibold"></span>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label class="form-label fw-bold text-gray-800">Assign Department</label>
-                        <select asp-for="DeptId" class="form-select border-theme" asp-items="ViewBag.Departments">
-                            <option value="">-- No Department Assigned (Undeclared) --</option>
-                        </select>
-                        <span asp-validation-for="DeptId" class="text-danger small fw-semibold"></span>
-                    </div>
+                    <partial name="_StudentForm" />
                 </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top">

@@ -22,87 +22,23 @@
 
     <div class="row g-4">
         <div class="col-lg-6">
-            <div class="card shadow border-0 h-100">
-                <div class="card-header bg-theme text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-users me-2"></i> Enrolled Students</h5>
-                    <span class="badge bg-white text-theme rounded-pill p-2">@Model.Students.Count</span>
-                </div>
-                <div class="card-body p-0">
-                    @if (Model.Students.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="px-4 py-3">ID</th>
-                                        <th class="py-3">Name</th>
-                                        <th class="py-3">Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var student in Model.Students)
-                                    {
-                                        <tr>
-                                            <td class="px-4 text-muted">@student.Ssn</td>
-                                            <td class="fw-bold">@student.Name</td>
-                                            <td><a href="mailto:@student.Email" class="text-decoration-none text-muted">@student.Email</a></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-5">
-                            <i class="fas fa-user-slash fs-1 text-muted mb-3 d-block"></i>
-                            <p class="text-muted mb-0">No students are currently enrolled in this department.</p>
-                        </div>
-                    }
-                </div>
-            </div>
+            @{
+                ViewBag.TableTitle = "Enrolled Students";
+                ViewBag.TableIcon = "fa-users";
+                ViewBag.IdProperty = "Ssn";
+                ViewBag.TableColor = "bg-theme";
+            }
+            <partial name="_MemberTable" model="Model.Students" />
         </div>
         
         <div class="col-lg-6">
-            <div class="card shadow border-0 h-100">
-                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i> Assigned Instructors</h5>
-                    <span class="badge bg-white text-dark rounded-pill p-2">@Model.Instructors.Count</span>
-                </div>
-                <div class="card-body p-0">
-                    @if (Model.Instructors.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="px-4 py-3">ID</th>
-                                        <th class="py-3">Name</th>
-                                        <th class="py-3">Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var instructor in Model.Instructors)
-                                    {
-                                        <tr>
-                                            <td class="px-4 text-muted">@instructor.InsId</td>
-                                            <td class="fw-bold">@instructor.Name</td>
-                                            <td><a href="mailto:@instructor.Email" class="text-decoration-none text-muted">@instructor.Email</a></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-5">
-                            <i class="fas fa-user-tie fs-1 text-muted mb-3 d-block"></i>
-                            <p class="text-muted mb-0">No instructors are assigned yet.</p>
-                        </div>
-                    }
-                </div>
-            </div>
+            @{
+                ViewBag.TableTitle = "Assigned Instructors";
+                ViewBag.TableIcon = "fa-user-tie";
+                ViewBag.IdProperty = "InsId";
+                ViewBag.TableColor = "bg-secondary";
+            }
+            <partial name="_MemberTable" model="Model.Instructors" />
         </div>
     </div>
 </div>

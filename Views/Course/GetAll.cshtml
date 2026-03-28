@@ -11,42 +11,41 @@
     </div>
 
     <div class="card shadow mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6 class="m-0 font-weight-bold text-theme"><i class="fas fa-search me-1"></i> Quick Search</h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-theme text-white border-0"><i class="fas fa-filter"></i></span>
+                        <input type="text" id="courseSearch" class="form-control border-left-0 shadow-none" placeholder="Search by name or description..." />
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>@Html.DisplayNameFor(model => model.Name)</th>
-                            <th>@Html.DisplayNameFor(model => model.Description)</th>
-                            <th>@Html.DisplayNameFor(model => model.Topics)</th>
-                            <th>@Html.DisplayNameFor(model => model.MinDegree)</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (TempData["Error"] != null)
-                        {
-                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        }
-                        @foreach (var item in Model) {
-                            <tr>
-                                <td><span class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</span></td>
-                                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Topics)</td>
-                                <td><span class="badge bg-theme text-white">@Html.DisplayFor(modelItem => item.MinDegree)</span></td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a asp-action="Edit" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-theme"><i class="fas fa-edit"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div id="courseTableContainer">
+                <partial name="_CourseTable" />
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#courseSearch").on("keyup", function () {
+                var value = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetAll", "Course")',
+                    data: { search: value },
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    success: function (data) {
+                        $("#courseTableContainer").html(data);
+                    }
+                });
+            });
+        });
+    </script>
+}

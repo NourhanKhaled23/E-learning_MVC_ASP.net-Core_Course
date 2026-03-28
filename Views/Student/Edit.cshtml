@@ -16,37 +16,7 @@
                 <input type="hidden" asp-for="ExistingImage" />
 
                 <div class="row g-4">
-                    <div class="col-md-6">
-                        <label asp-for="Name" class="form-label control-label fw-bold text-gray-800">Student Name</label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Email" class="form-label control-label fw-bold text-gray-800">Email Address</label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Age" class="form-label control-label fw-bold text-gray-800">Age</label>
-                        <input asp-for="Age" class="form-control" />
-                        <span asp-validation-for="Age" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Address" class="form-label control-label fw-bold text-gray-800">Home Address</label>
-                        <input asp-for="Address" class="form-control" />
-                        <span asp-validation-for="Address" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label asp-for="DeptId" class="form-label control-label fw-bold text-gray-800">Assigned Department</label>
-                        <select asp-for="DeptId" class="form-select border-theme" asp-items="ViewBag.Departments">
-                            <option value="">-- No Department Assigned (Undeclared) --</option>
-                        </select>
-                        <span asp-validation-for="DeptId" class="text-danger small"></span>
-                    </div>
+                    <partial name="_StudentForm" />
 
                     <div class="col-12 mt-4 pt-3 border-top">
                         <label asp-for="ImageFile" class="form-label control-label fw-bold text-gray-800">Update Profile Picture</label>
