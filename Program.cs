@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Services;
+using NLog;
+using NLog.Web;
 
 namespace WebApplication1
 {
@@ -14,11 +16,21 @@ namespace WebApplication1
             
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
-            // Register FileUploadService
             builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
             builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
 
             var app = builder.Build();
 
@@ -28,9 +40,10 @@ namespace WebApplication1
                 SeedData.Initialize(context);
             }
 
+            app.UseMiddleware<WebApplication1.Middleware.ExceptionHandlingMiddleware>();
+
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
@@ -38,6 +51,7 @@ namespace WebApplication1
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
