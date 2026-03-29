@@ -10,16 +10,26 @@ namespace WebApplication1.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IFileUploadService _fileUploadService;
+        private readonly ILogger<StudentController> _logger;
 
-        public StudentController(AppDbContext context, IFileUploadService fileUploadService)
+        public StudentController(AppDbContext context, IFileUploadService fileUploadService, ILogger<StudentController> logger)
         {
             _context = context;
             _fileUploadService = fileUploadService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> GetAll()
         {
             var students = await _context.Students.ToListAsync();
+
+            ViewData["Title"] = "Student List";
+            ViewData["ServerTime"] = DateTime.Now;
+
+            ViewBag.StudentCount = students.Count;
+
+            ViewBag.LastViewedStudent = HttpContext.Session.GetString("LastViewedStudent");
+
             return View(students);
         }
 
@@ -49,7 +59,17 @@ namespace WebApplication1.Controllers
                     MinDegree = e.Course.MinDegree
                 }).ToList()
             };
+            
+            HttpContext.Session.SetString("LastViewedStudent", student.Name);
+
             return View(model);
+        }
+
+        public IActionResult SessionInfo()
+        {
+            var lastStudent = HttpContext.Session.GetString("LastViewedStudent") ?? "No student viewed yet!";
+            ViewBag.LastStudent = lastStudent;
+            return View();
         }
 
         public IActionResult Create()
@@ -90,7 +110,10 @@ namespace WebApplication1.Controllers
                 _context.Students.Add(student);
                 await _context.SaveChangesAsync();
                 
-                TempData["Success"] = "Student created successfully!";
+                _logger.LogInformation($"Student added successfully: {student.Name} (SSN: {student.Ssn})");
+                
+                TempData["Success"] = "Student added successfully!";
+                
                 return RedirectToAction("GetAll");
             }
             
