@@ -8,10 +8,10 @@ namespace WebApplication1.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly ICourseRepository _courseRepo;
+        private readonly IRepository<Course> _courseRepo;
         private readonly IMapper _mapper;
 
-        public CourseController(ICourseRepository courseRepo, IMapper mapper)
+        public CourseController(IRepository<Course> courseRepo, IMapper mapper)
         {
             _courseRepo = courseRepo;
             _mapper = mapper;
@@ -19,7 +19,7 @@ namespace WebApplication1.Controllers
 
         public IActionResult GetAll(string search = "")
         {
-            var courses = _courseRepo.Search(search);
+            var courses = string.IsNullOrWhiteSpace(search) ? _courseRepo.GetAll() : _courseRepo.Find(c => c.Name.Contains(search) || (c.Description != null && c.Description.Contains(search)));
             var model = _mapper.Map<List<CourseViewModel>>(courses);
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existing = _courseRepo.FindByName(model.Name);
+                var existing = _courseRepo.GetFirstOrDefault(c => c.Name.ToLower() == model.Name.ToLower());
                 if (existing != null)
                 {
                     ModelState.AddModelError("Name", "A course with this name already exists.");
@@ -72,7 +72,7 @@ namespace WebApplication1.Controllers
 
             if (ModelState.IsValid)
             {
-                var existing = _courseRepo.FindByName(model.Name);
+                var existing = _courseRepo.GetFirstOrDefault(c => c.Name.ToLower() == model.Name.ToLower());
                 if (existing != null && existing.CrsId != id)
                 {
                     ModelState.AddModelError("Name", "Another course with this name already exists.");

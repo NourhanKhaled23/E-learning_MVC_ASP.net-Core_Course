@@ -32,14 +32,9 @@ namespace WebApplication1
 
             builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
-
+            builder.Services.AddKeyedScoped<INotificationService, EmailNotificationService>("email");
+            builder.Services.AddKeyedScoped<INotificationService, SmsNotificationService>("sms");
             builder.Services.AddScoped(typeof(WebApplication1.Repositories.IRepository<>), typeof(WebApplication1.Repositories.Repository<>));
-            builder.Services.AddScoped<WebApplication1.Repositories.IDepartmentRepository, WebApplication1.Repositories.DepartmentRepository>();
-            builder.Services.AddScoped<WebApplication1.Repositories.IStudentRepository, WebApplication1.Repositories.StudentRepository>();
-            builder.Services.AddScoped<WebApplication1.Repositories.ICourseRepository, WebApplication1.Repositories.CourseRepository>();
-            builder.Services.AddScoped<WebApplication1.Repositories.IInstructorRepository, WebApplication1.Repositories.InstructorRepository>();
-            builder.Services.AddScoped<WebApplication1.Repositories.IEnrollmentRepository, WebApplication1.Repositories.EnrollmentRepository>();
-
 
             builder.Services.AddScoped<WebApplication1.Filters.ValidateLocationFilter>();
             builder.Services.AddScoped<WebApplication1.Filters.StudentHeaderAuthorizationFilter>();

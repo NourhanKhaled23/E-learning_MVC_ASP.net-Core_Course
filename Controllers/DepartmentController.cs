@@ -7,22 +7,22 @@ namespace WebApplication1.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _deptRepo;
+        private readonly IRepository<Department> _deptRepo;
 
-        public DepartmentController(IDepartmentRepository deptRepo)
+        public DepartmentController(IRepository<Department> deptRepo)
         {
             _deptRepo = deptRepo;
         }
 
         public IActionResult GetAll()
         {
-            var departments = _deptRepo.GetAllWithDetails();
+            var departments = _deptRepo.GetAll("Students", "Instructors");
             return View(departments);
         }
 
         public IActionResult Details(int id)
         {
-            var department = _deptRepo.GetWithDetails(id);
+            var department = _deptRepo.GetFirstOrDefault(d => d.DeptId == id, "Students", "Instructors");
             
             if (department == null)
                 return NotFound();

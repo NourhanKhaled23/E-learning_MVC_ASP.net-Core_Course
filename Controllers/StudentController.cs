@@ -10,12 +10,16 @@ namespace WebApplication1.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly IStudentRepository _studentRepo;
-        private readonly IDepartmentRepository _deptRepo;
+        private readonly IRepository<Student> _studentRepo;
+        private readonly IRepository<Department> _deptRepo;
         private readonly IFileUploadService _fileUploadService;
         private readonly ILogger<StudentController> _logger;
 
-        public StudentController(IStudentRepository studentRepo, IDepartmentRepository deptRepo, IFileUploadService fileUploadService, ILogger<StudentController> logger)
+        public StudentController(
+            IRepository<Student> studentRepo, 
+            IRepository<Department> deptRepo, 
+            IFileUploadService fileUploadService, 
+            ILogger<StudentController> logger)
         {
             _studentRepo = studentRepo;
             _deptRepo = deptRepo;
@@ -40,7 +44,7 @@ namespace WebApplication1.Controllers
         [ServiceFilter(typeof(StudentHeaderAuthorizationFilter))]
         public IActionResult Details(int id)
         {
-            var student = _studentRepo.GetWithDetails(id);
+            var student = _studentRepo.GetFirstOrDefault(s => s.Ssn == id, "Department", "Enrollments.Course");
 
             if (student == null) return NotFound();
 
@@ -80,7 +84,10 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateStudentViewModel model)
+        public async Task<IActionResult> Create(
+            CreateStudentViewModel model,
+            [FromKeyedServices("email")] INotificationService emailNotificationService,
+            [FromKeyedServices("sms")] INotificationService smsNotificationService)
         {
             if (ModelState.IsValid)
             {
@@ -115,6 +122,9 @@ namespace WebApplication1.Controllers
                 _studentRepo.Add(student);
                 
                 _logger.LogInformation($"Student added successfully: {student.Name} (SSN: {student.Ssn})");
+                
+                await emailNotificationService.SendAsync(student.Email ?? "Unknown", $"Welcome {student.Name}, your student account has been created!");
+                await smsNotificationService.SendAsync(student.Name, "Your student registration was successful!");
                 
                 TempData["Success"] = "Student added successfully!";
                 

@@ -8,11 +8,11 @@ namespace WebApplication1.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private readonly IEnrollmentRepository _enrollmentRepo;
-        private readonly IStudentRepository _studentRepo;
-        private readonly ICourseRepository _courseRepo;
+        private readonly IRepository<Enrollment> _enrollmentRepo;
+        private readonly IRepository<Student> _studentRepo;
+        private readonly IRepository<Course> _courseRepo;
 
-        public EnrollmentController(IEnrollmentRepository enrollmentRepo, IStudentRepository studentRepo, ICourseRepository courseRepo)
+        public EnrollmentController(IRepository<Enrollment> enrollmentRepo, IRepository<Student> studentRepo, IRepository<Course> courseRepo)
         {
             _enrollmentRepo = enrollmentRepo;
             _studentRepo = studentRepo;
@@ -39,7 +39,7 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_enrollmentRepo.Exists(model.StudentSsn, model.CourseId))
+                if (_enrollmentRepo.Find(e => e.StudentSsn == model.StudentSsn && e.CourseId == model.CourseId).Any())
                 {
                     ModelState.AddModelError("CourseId", "Student is already enrolled in this course.");
                     ViewBag.Courses = new SelectList(_courseRepo.GetAll(), "CrsId", "Name", model.CourseId);
