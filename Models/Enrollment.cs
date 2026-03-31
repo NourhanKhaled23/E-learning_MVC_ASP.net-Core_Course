@@ -8,12 +8,12 @@ namespace WebApplication1.Models
         public int StudentSsn { get; set; }
 
         [ForeignKey("StudentSsn")]
-        public Student Student { get; set; }
+        public Student? Student { get; set; }
 
         public int CourseId { get; set; }
 
         [ForeignKey("CourseId")]
-        public Course Course { get; set; }
+        public Course? Course { get; set; }
 
         public string Grade { get; set; } = string.Empty;
         

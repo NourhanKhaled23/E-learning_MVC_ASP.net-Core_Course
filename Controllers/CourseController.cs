@@ -1,33 +1,25 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.Models.ViewModels;
+using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ICourseRepository _courseRepo;
         private readonly IMapper _mapper;
 
-        public CourseController(AppDbContext context, IMapper mapper)
+        public CourseController(ICourseRepository courseRepo, IMapper mapper)
         {
-            _context = context;
+            _courseRepo = courseRepo;
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> GetAll(string search = "")
+        public IActionResult GetAll(string search = "")
         {
-            var coursesQuery = _context.Courses.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                coursesQuery = coursesQuery.Where(c => c.Name.Contains(search) || c.Description.Contains(search));
-            }
-
-            var courses = await coursesQuery.ToListAsync();
+            var courses = _courseRepo.Search(search);
             var model = _mapper.Map<List<CourseViewModel>>(courses);
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -44,20 +36,19 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CourseViewModel model)
+        public IActionResult Create(CourseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var isDuplicate = await _context.Courses.AnyAsync(c => c.Name.ToLower() == model.Name.ToLower());
-                if (isDuplicate)
+                var existing = _courseRepo.FindByName(model.Name);
+                if (existing != null)
                 {
                     ModelState.AddModelError("Name", "A course with this name already exists.");
                     return View(model);
                 }
 
                 var course = _mapper.Map<Course>(model);
-                _context.Courses.Add(course);
-                await _context.SaveChangesAsync();
+                _courseRepo.Add(course);
                 
                 TempData["Success"] = "Course added successfully!";
                 return RedirectToAction(nameof(GetAll));
@@ -65,9 +56,9 @@ namespace WebApplication1.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = _courseRepo.GetById(id);
             if (course == null) return NotFound();
 
             var model = _mapper.Map<CourseViewModel>(course);
@@ -75,22 +66,21 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, CourseViewModel model)
+        public IActionResult Edit(int id, CourseViewModel model)
         {
             if (id != model.CrsId) return NotFound();
 
             if (ModelState.IsValid)
             {
-                var isDuplicate = await _context.Courses.AnyAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CrsId != id);
-                if (isDuplicate)
+                var existing = _courseRepo.FindByName(model.Name);
+                if (existing != null && existing.CrsId != id)
                 {
                     ModelState.AddModelError("Name", "Another course with this name already exists.");
                     return View(model);
                 }
 
                 var course = _mapper.Map<Course>(model);
-                _context.Update(course);
-                await _context.SaveChangesAsync();
+                _courseRepo.Update(course);
                 
                 TempData["Success"] = "Course updated successfully!";
                 return RedirectToAction(nameof(GetAll));

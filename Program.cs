@@ -3,6 +3,7 @@ using WebApplication1.Data;
 using WebApplication1.Services;
 using NLog;
 using NLog.Web;
+using AutoMapper;
 
 namespace WebApplication1
 {
@@ -12,7 +13,11 @@ namespace WebApplication1
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options => 
+            {
+                options.Filters.Add<WebApplication1.Filters.GlobalExceptionFilter>();
+                options.Filters.Add<WebApplication1.Filters.AddCustomHeaderResultFilter>();
+            });
             
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -27,7 +32,19 @@ namespace WebApplication1
 
             builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
-            builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Services.AddScoped(typeof(WebApplication1.Repositories.IRepository<>), typeof(WebApplication1.Repositories.Repository<>));
+            builder.Services.AddScoped<WebApplication1.Repositories.IDepartmentRepository, WebApplication1.Repositories.DepartmentRepository>();
+            builder.Services.AddScoped<WebApplication1.Repositories.IStudentRepository, WebApplication1.Repositories.StudentRepository>();
+            builder.Services.AddScoped<WebApplication1.Repositories.ICourseRepository, WebApplication1.Repositories.CourseRepository>();
+            builder.Services.AddScoped<WebApplication1.Repositories.IInstructorRepository, WebApplication1.Repositories.InstructorRepository>();
+            builder.Services.AddScoped<WebApplication1.Repositories.IEnrollmentRepository, WebApplication1.Repositories.EnrollmentRepository>();
+
+
+            builder.Services.AddScoped<WebApplication1.Filters.ValidateLocationFilter>();
+            builder.Services.AddScoped<WebApplication1.Filters.StudentHeaderAuthorizationFilter>();
+
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();

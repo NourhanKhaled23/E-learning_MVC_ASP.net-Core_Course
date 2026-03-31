@@ -1,0 +1,12 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+D:\ITI\MVC_LABS\WebApplication2NK\WebApplication1\Controllers\StudentController.cs(58,34): warning CS8602: Dereference of a possibly null reference. [D:\ITI\MVC_LABS\WebApplication2NK\WebApplication1\WebApplication1.csproj]
+  WebApplication1 -> D:\ITI\MVC_LABS\WebApplication2NK\WebApplication1\bin\Debug\net10.0\WebApplication1.dll
+
+Build succeeded.
+
+D:\ITI\MVC_LABS\WebApplication2NK\WebApplication1\Controllers\StudentController.cs(58,34): warning CS8602: Dereference of a possibly null reference. [D:\ITI\MVC_LABS\WebApplication2NK\WebApplication1\WebApplication1.csproj]
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.96

@@ -1,0 +1,60 @@
+@model WebApplication1.Models.Department
+
+@{
+    ViewData["Title"] = "Add Department V2";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0 col-md-8 mx-auto">
+        <div class="card-header bg-theme text-white">
+            <h4 class="mb-0">Add New Department (V2)</h4>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-info border-0 shadow-sm mb-4">
+                <i class="fas fa-globe me-2"></i> <strong>Note:</strong> Only <strong>"USA"</strong> or <strong>"EG"</strong> are accepted as valid locations.
+            </div>
+
+            <form asp-action="AddV2" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Name" class="form-label control-label fw-bold">Department Name</label>
+                        <select asp-for="Name" class="form-select border-theme">
+                            <option value="">-- Select Accredited Department --</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Systems">Information Systems</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Artificial Intelligence">Artificial Intelligence</option>
+                            <option value="Networks & Cyber Security">Networks & Cyber Security</option>
+                        </select>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                        <div class="form-text mt-2 text-muted"><i class="fas fa-info-circle me-1"></i> System restricts additions strictly to the approved catalogue.</div>
+                    </div>
+
+                    <div class="col-md-6 form-floating mb-3">
+                        <input asp-for="Location" class="form-control" placeholder="Location" />
+                        <label asp-for="Location" class="ms-2">Location</label>
+                        <span asp-validation-for="Location" class="text-danger small"></span>
+                        <small class="text-muted d-block mt-1 ms-2">Example: USA, EG</small>
+                    </div>
+
+                    <div class="col-md-6 form-floating mb-3">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                        <label asp-for="PhoneNumber" class="ms-2">Phone Number</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-4">
+                    <a asp-action="GetAll" class="btn btn-outline-secondary">Back to List</a>
+                    <button type="submit" class="btn btn-theme px-4">Save Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

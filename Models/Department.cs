@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
@@ -10,6 +10,8 @@ namespace WebApplication1.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [Required]
+        [StringLength(100)]
         public string Location { get; set; } = string.Empty;
 
         public string PhoneNumber { get; set; } = string.Empty;

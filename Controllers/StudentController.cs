@@ -1,45 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.Services;
 using WebApplication1.Models.ViewModels;
+using WebApplication1.Repositories;
+using WebApplication1.Filters;
+using System.Threading.Tasks;
+
 namespace WebApplication1.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IStudentRepository _studentRepo;
+        private readonly IDepartmentRepository _deptRepo;
         private readonly IFileUploadService _fileUploadService;
         private readonly ILogger<StudentController> _logger;
 
-        public StudentController(AppDbContext context, IFileUploadService fileUploadService, ILogger<StudentController> logger)
+        public StudentController(IStudentRepository studentRepo, IDepartmentRepository deptRepo, IFileUploadService fileUploadService, ILogger<StudentController> logger)
         {
-            _context = context;
+            _studentRepo = studentRepo;
+            _deptRepo = deptRepo;
             _fileUploadService = fileUploadService;
             _logger = logger;
         }
 
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var students = await _context.Students.ToListAsync();
+            var students = _studentRepo.GetAll();
 
             ViewData["Title"] = "Student List";
             ViewData["ServerTime"] = DateTime.Now;
 
-            ViewBag.StudentCount = students.Count;
+            ViewBag.StudentCount = students.Count();
 
             ViewBag.LastViewedStudent = HttpContext.Session.GetString("LastViewedStudent");
 
             return View(students);
         }
 
-        public async Task<IActionResult> Details(int id)
+        [ServiceFilter(typeof(StudentHeaderAuthorizationFilter))]
+        public IActionResult Details(int id)
         {
-            var student = await _context.Students
-                .Include(s => s.Department)
-                .Include(s => s.Enrollments)
-                    .ThenInclude(e => e.Course)
-                .FirstOrDefaultAsync(s => s.Ssn == id);
+            var student = _studentRepo.GetWithDetails(id);
 
             if (student == null) return NotFound();
 
@@ -54,9 +55,9 @@ namespace WebApplication1.Controllers
                 DepartmentName = student.Department?.Name ?? "N/A",
                 Courses = student.Enrollments.Select(e => new StudentCourseViewModel
                 {
-                    CourseName = e.Course.Name,
+                    CourseName = e.Course?.Name ?? "Unknown",
                     Degree = e.Degree,
-                    MinDegree = e.Course.MinDegree
+                    MinDegree = e.Course?.MinDegree ?? 0
                 }).ToList()
             };
             
@@ -74,7 +75,7 @@ namespace WebApplication1.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Departments, "DeptId", "Name");
+            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name");
             return View(new CreateStudentViewModel());
         }
 
@@ -89,7 +90,11 @@ namespace WebApplication1.Controllers
                 {
                     try
                     {
-                        imagePath = await _fileUploadService.UploadImageAsync(model.ImageFile);
+                        var uploadedImage = await _fileUploadService.UploadImageAsync(model.ImageFile);
+                        if (uploadedImage != null)
+                        {
+                            imagePath = uploadedImage;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -107,8 +112,7 @@ namespace WebApplication1.Controllers
                     Image = imagePath
                 };
 
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync();
+                _studentRepo.Add(student);
                 
                 _logger.LogInformation($"Student added successfully: {student.Name} (SSN: {student.Ssn})");
                 
@@ -117,13 +121,13 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("GetAll");
             }
             
-            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Departments, "DeptId", "Name");
+            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name");
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = _studentRepo.GetById(id);
             if (student == null) return NotFound();
 
             var model = new StudentEditViewModel
@@ -137,7 +141,7 @@ namespace WebApplication1.Controllers
                 DeptId = student.DeptId
             };
             
-            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Departments, "DeptId", "Name", model.DeptId);
+            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name", model.DeptId);
             return View(model);
         }
 
@@ -148,7 +152,7 @@ namespace WebApplication1.Controllers
 
             if (ModelState.IsValid)
             {
-                var student = await _context.Students.FindAsync(id);
+                var student = _studentRepo.GetById(id);
                 if (student == null) return NotFound();
 
                 student.Name = model.Name;
@@ -161,24 +165,27 @@ namespace WebApplication1.Controllers
                 {
                     try
                     {
-                        student.Image = await _fileUploadService.UploadImageAsync(model.ImageFile);
+                        var uploadedImage = await _fileUploadService.UploadImageAsync(model.ImageFile);
+                        if (uploadedImage != null)
+                        {
+                            student.Image = uploadedImage;
+                        }
                     }
                     catch (Exception ex)
                     {
                         ModelState.AddModelError("ImageFile", "Error uploading image: " + ex.Message);
-                        ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Departments, "DeptId", "Name", model.DeptId);
+                        ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name", model.DeptId);
                         return View(model);
                     }
                 }
 
-                _context.Update(student);
-                await _context.SaveChangesAsync();
+                _studentRepo.Update(student);
                 
                 TempData["Success"] = "Student updated successfully!";
                 return RedirectToAction(nameof(GetAll));
             }
 
-            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Departments, "DeptId", "Name", model.DeptId);
+            ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name", model.DeptId);
             return View(model);
         }
     }

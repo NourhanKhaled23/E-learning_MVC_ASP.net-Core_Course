@@ -1,34 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Repositories;
+using WebApplication1.Filters;
 
 namespace WebApplication1.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IDepartmentRepository _deptRepo;
 
-        public DepartmentController(AppDbContext context)
+        public DepartmentController(IDepartmentRepository deptRepo)
         {
-            _context = context;
+            _deptRepo = deptRepo;
         }
 
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var departments = await _context.Departments
-                .Include(d => d.Students)
-                .Include(d => d.Instructors)
-                .ToListAsync();
+            var departments = _deptRepo.GetAllWithDetails();
             return View(departments);
         }
 
-        public async Task<IActionResult> Details(int id)
+        public IActionResult Details(int id)
         {
-            var department = await _context.Departments
-                .Include(d => d.Students)
-                .Include(d => d.Instructors)
-                .FirstOrDefaultAsync(d => d.DeptId == id);
+            var department = _deptRepo.GetWithDetails(id);
             
             if (department == null)
                 return NotFound();
@@ -42,12 +36,11 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Department department)
+        public IActionResult Create(Department department)
         {
             if (ModelState.IsValid)
             {
-                _context.Departments.Add(department);
-                await _context.SaveChangesAsync();
+                _deptRepo.Add(department);
                 
                 TempData["Success"] = "Department added successfully!";
                 return RedirectToAction("GetAll");
@@ -56,27 +49,45 @@ namespace WebApplication1.Controllers
             return View(department);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = _deptRepo.GetById(id);
             if (department == null) return NotFound();
             return View(department);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Department department)
+        public IActionResult Edit(int id, Department department)
         {
             if (id != department.DeptId) return NotFound();
 
             if (ModelState.IsValid)
             {
-                _context.Update(department);
-                await _context.SaveChangesAsync();
+                _deptRepo.Update(department);
                 
                 TempData["Success"] = "Department updated successfully!";
                 return RedirectToAction(nameof(GetAll));
             }
             return View(department);
+        }
+
+
+        public IActionResult AddV2()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [ServiceFilter(typeof(ValidateLocationFilter))]
+        public IActionResult AddV2(Department department)
+        {
+            if (!ModelState.IsValid)
+                return View(department);
+
+
+            _deptRepo.Add(department);
+            return RedirectToAction("GetAll");
         }
     }
 }

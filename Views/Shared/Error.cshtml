@@ -13,6 +13,13 @@
     </p>
 }
 
+@if (!string.IsNullOrEmpty(Model.ExceptionMessage))
+{
+    <div class="alert alert-danger mt-3">
+        <strong>Error Message:</strong> @Model.ExceptionMessage
+    </div>
+}
+
 <h3>Development Mode</h3>
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.

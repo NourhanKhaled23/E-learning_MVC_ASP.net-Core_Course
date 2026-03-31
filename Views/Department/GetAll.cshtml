@@ -5,11 +5,16 @@
 }
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h2>All Departments</h2>
-        <a asp-action="Create" class="btn btn-success">
-            Add New Department
-        </a>
+    <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-0 pt-4 px-4">
+        <h2 class="mb-0 text-theme fw-bold">All Departments</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <i class="fas fa-plus me-1"></i> Add New
+            </a>
+            <a asp-action="AddV2" class="btn btn-outline-theme rounded-pill px-4 shadow-sm border-2 fw-bold">
+                <i class="fas fa-star me-1"></i> Add V2
+            </a>
+        </div>
     </div>
     <div class="card-body">
         @if (TempData["Success"] != null)

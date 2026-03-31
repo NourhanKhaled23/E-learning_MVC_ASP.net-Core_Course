@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Session Information";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h2>4. Session Example</h2>
+    </div>
+    <div class="card-body">
+        <p class="lead">
+            The data below is stored in the <strong>Session</strong>.
+        </p>
+        <div class="p-4 border rounded bg-light mb-4 text-center">
+            <h3>Last Student Viewed:</h3>
+            <h1 class="text-primary display-4">@ViewBag.LastStudent</h1>
+        </div>
+        
+        <div class="alert alert-warning">
+            <strong>How it works:</strong>
+            <ol>
+                <li>Go back to the <a asp-action="GetAll" class="alert-link">Student List</a>.</li>
+                <li>Click <strong>View Details</strong> on any student. This sets the <code>LastViewedStudent</code> in session.</li>
+                <li>Come back to this page. Even after multiple requests, this data persists as long as your session is active!</li>
+            </ol>
+        </div>
+
+        <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

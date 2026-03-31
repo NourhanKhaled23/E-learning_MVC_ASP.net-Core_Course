@@ -21,5 +21,10 @@ namespace WebApplication1.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult TestGlobalException()
+        {
+            throw new Exception("This is a deliberate crash for testing the GlobalExceptionFilter!");
+        }
     }
 }

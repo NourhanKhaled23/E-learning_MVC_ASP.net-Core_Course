@@ -1,24 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.Models.ViewModels;
+using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IEnrollmentRepository _enrollmentRepo;
+        private readonly IStudentRepository _studentRepo;
+        private readonly ICourseRepository _courseRepo;
 
-        public EnrollmentController(AppDbContext context)
+        public EnrollmentController(IEnrollmentRepository enrollmentRepo, IStudentRepository studentRepo, ICourseRepository courseRepo)
         {
-            _context = context;
+            _enrollmentRepo = enrollmentRepo;
+            _studentRepo = studentRepo;
+            _courseRepo = courseRepo;
         }
 
-        public async Task<IActionResult> Create(int id)
+        public IActionResult Create(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = _studentRepo.GetById(id);
             if (student == null) return NotFound();
 
             var enrollmentViewModel = new EnrollStudentViewModel
@@ -27,22 +30,19 @@ namespace WebApplication1.Controllers
                 StudentName = student.Name
             };
 
-            ViewBag.Courses = new SelectList(await _context.Courses.ToListAsync(), "CrsId", "Name");
+            ViewBag.Courses = new SelectList(_courseRepo.GetAll(), "CrsId", "Name");
             return View(enrollmentViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EnrollStudentViewModel model)
+        public IActionResult Create(EnrollStudentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var existingEnrollment = await _context.Enrollments
-                    .AnyAsync(e => e.StudentSsn == model.StudentSsn && e.CourseId == model.CourseId);
-
-                if (existingEnrollment)
+                if (_enrollmentRepo.Exists(model.StudentSsn, model.CourseId))
                 {
                     ModelState.AddModelError("CourseId", "Student is already enrolled in this course.");
-                    ViewBag.Courses = new SelectList(await _context.Courses.ToListAsync(), "CrsId", "Name", model.CourseId);
+                    ViewBag.Courses = new SelectList(_courseRepo.GetAll(), "CrsId", "Name", model.CourseId);
                     return View(model);
                 }
 
@@ -54,14 +54,13 @@ namespace WebApplication1.Controllers
                     Grade = "Final"
                 };
 
-                _context.Enrollments.Add(enrollment);
-                await _context.SaveChangesAsync();
+                _enrollmentRepo.Add(enrollment);
 
                 TempData["Success"] = $"Student {model.StudentName} enrolled in course successfully!";
                 return RedirectToAction("Details", "Student", new { id = model.StudentSsn });
             }
 
-            ViewBag.Courses = new SelectList(await _context.Courses.ToListAsync(), "CrsId", "Name", model.CourseId);
+            ViewBag.Courses = new SelectList(_courseRepo.GetAll(), "CrsId", "Name", model.CourseId);
             return View(model);
         }
     }
