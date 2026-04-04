@@ -74,6 +74,12 @@ namespace WebApplication1.Repositories
             }
         }
 
+        public virtual void Delete(T entity)
+        {
+            _dbSet.Remove(entity);
+            Save();
+        }
+
         public virtual void Save()
         {
             _context.SaveChanges();

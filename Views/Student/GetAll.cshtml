@@ -71,10 +71,23 @@
                                 <td>@student.Address</td>
                                 <td>@student.Email</td>
                                 <td>
-                                    <a asp-action="Details" asp-route-id="@student.Ssn"
-                                       class="btn btn-sm btn-info">
-                                        View Details
-                                    </a>
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@student.Ssn"
+                                           class="btn btn-sm btn-info text-white">
+                                            <i class="bi bi-eye"></i> Details
+                                        </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@student.Ssn"
+                                               class="btn btn-sm btn-warning text-white">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@student.Ssn"
+                                               class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }

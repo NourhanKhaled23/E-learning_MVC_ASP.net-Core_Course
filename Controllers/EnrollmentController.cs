@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using WebApplication1.Models;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize(Roles = "Admin, Instructor")]
     public class EnrollmentController : Controller
     {
         private readonly IRepository<Enrollment> _enrollmentRepo;
@@ -35,6 +37,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(EnrollStudentViewModel model)
         {
             if (ModelState.IsValid)
@@ -62,6 +65,26 @@ namespace WebApplication1.Controllers
 
             ViewBag.Courses = new SelectList(_courseRepo.GetAll(), "CrsId", "Name", model.CourseId);
             return View(model);
+        }
+
+        public IActionResult Delete(int studentSsn, int courseId)
+        {
+            var enrollment = _enrollmentRepo.GetFirstOrDefault(e => e.StudentSsn == studentSsn && e.CourseId == courseId, "Student", "Course");
+            if (enrollment == null) return NotFound();
+            return View(enrollment);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int studentSsn, int courseId)
+        {
+            var enrollment = _enrollmentRepo.GetFirstOrDefault(e => e.StudentSsn == studentSsn && e.CourseId == courseId);
+            if (enrollment != null)
+            {
+                _enrollmentRepo.Delete(enrollment);
+                TempData["Success"] = "Student unenrolled successfully!";
+            }
+            return RedirectToAction("Details", "Student", new { id = studentSsn });
         }
     }
 }

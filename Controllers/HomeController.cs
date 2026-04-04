@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
+using System;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -22,6 +24,7 @@ namespace WebApplication1.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult TestGlobalException()
         {
             throw new Exception("This is a deliberate crash for testing the GlobalExceptionFilter!");

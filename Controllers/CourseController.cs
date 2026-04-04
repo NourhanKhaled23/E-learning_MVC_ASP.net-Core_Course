@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
 using WebApplication1.Models.ViewModels;
@@ -6,6 +7,7 @@ using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class CourseController : Controller
     {
         private readonly IRepository<Course> _courseRepo;
@@ -30,12 +32,15 @@ namespace WebApplication1.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new CourseViewModel());
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CourseViewModel model)
         {
             if (ModelState.IsValid)
@@ -56,6 +61,7 @@ namespace WebApplication1.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var course = _courseRepo.GetById(id);
@@ -66,6 +72,8 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, CourseViewModel model)
         {
             if (id != model.CrsId) return NotFound();
@@ -86,6 +94,24 @@ namespace WebApplication1.Controllers
                 return RedirectToAction(nameof(GetAll));
             }
             return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(int id)
+        {
+            var course = _courseRepo.GetById(id);
+            if (course == null) return NotFound();
+            return View(course);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _courseRepo.Delete(id);
+            TempData["Success"] = "Course deleted successfully!";
+            return RedirectToAction(nameof(GetAll));
         }
     }
 }

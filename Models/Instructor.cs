@@ -23,6 +23,11 @@ namespace WebApplication1.Models
 
         public int DeptId { get; set; }
 
+        public string? ApplicationUserId { get; set; }
+
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; }
+
         [ForeignKey("DeptId")]
         public Department? Department { get; set; }
 

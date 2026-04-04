@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Dashboard Overview</h1>
+
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Students</h5>
+                    <h2 class="display-4">@ViewBag.StudentCount</h2>
+                    <a asp-controller="Student" asp-action="GetAll" class="text-white">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Instructors</h5>
+                    <h2 class="display-4">@ViewBag.InstructorCount</h2>
+                    <a asp-controller="Instructor" asp-action="Index" class="text-white">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Courses</h5>
+                    <h2 class="display-4">@ViewBag.CourseCount</h2>
+                    <a asp-controller="Course" asp-action="Index" class="text-white">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-danger text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Departments</h5>
+                    <h2 class="display-4">@ViewBag.DepartmentCount</h2>
+                    <a asp-controller="Department" asp-action="GetAll" class="text-white">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

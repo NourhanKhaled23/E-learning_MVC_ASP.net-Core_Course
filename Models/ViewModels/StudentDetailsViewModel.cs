@@ -2,6 +2,7 @@ namespace WebApplication1.Models.ViewModels
 {
     public class StudentCourseViewModel
     {
+        public int CourseId { get; set; }
         public string CourseName { get; set; } = string.Empty;
         public double Degree { get; set; }
         public double MinDegree { get; set; }

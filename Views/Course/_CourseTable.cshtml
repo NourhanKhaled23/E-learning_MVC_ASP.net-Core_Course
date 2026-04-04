@@ -23,7 +23,11 @@
                         <td><span class="badge bg-theme text-white">@Html.DisplayFor(modelItem => item.MinDegree)</span></td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-theme"><i class="fas fa-edit"></i></a>
+                                <a asp-action="Edit" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-theme" title="Edit"><i class="fas fa-edit"></i></a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.CrsId" class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></a>
+                                }
                             </div>
                         </td>
                     </tr>

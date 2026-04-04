@@ -4,6 +4,8 @@ using WebApplication1.Services;
 using NLog;
 using NLog.Web;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using WebApplication1.Models;
 
 namespace WebApplication1
 {
@@ -21,6 +23,36 @@ namespace WebApplication1
             
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
+
+            builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    var clientId = builder.Configuration["Authentication:Google:ClientId"];
+                    var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                    
+                    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret)
+                        || clientId.StartsWith("PLACE_YOUR") || clientSecret.StartsWith("PLACE_YOUR"))
+                    {
+                        Console.WriteLine("WARNING: Google OAuth credentials are not configured. Google login will not work.");
+                        Console.WriteLine("Run: dotnet user-secrets set \"Authentication:Google:ClientId\" \"YOUR_ID\"");
+                        Console.WriteLine("Run: dotnet user-secrets set \"Authentication:Google:ClientSecret\" \"YOUR_SECRET\"");
+                    }
+                    
+                    options.ClientId = clientId ?? "NOT_CONFIGURED";
+                    options.ClientSecret = clientSecret ?? "NOT_CONFIGURED";
+                });
             
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -39,7 +71,7 @@ namespace WebApplication1
             builder.Services.AddScoped<WebApplication1.Filters.ValidateLocationFilter>();
             builder.Services.AddScoped<WebApplication1.Filters.StudentHeaderAuthorizationFilter>();
 
-            builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
+            builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();
@@ -48,8 +80,19 @@ namespace WebApplication1
 
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<AppDbContext>();
                 SeedData.Initialize(context);
+
+                try 
+                {
+                    SeedData.SeedRolesAndAdminAsync(services).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred seeding the DB.");
+                }
             }
 
             app.UseMiddleware<WebApplication1.Middleware.ExceptionHandlingMiddleware>();
@@ -62,6 +105,7 @@ namespace WebApplication1
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using WebApplication1.Data;
 using WebApplication1.Models;
 
@@ -5,6 +6,41 @@ namespace WebApplication1
 {
     public static class SeedData
     {
+        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            string[] roleNames = { "Admin", "Student", "Instructor" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            var adminUser = await userManager.FindByEmailAsync("admin@example.com");
+            if (adminUser == null)
+            {
+                var newAdmin = new ApplicationUser
+                {
+                    UserName = "admin@example.com",
+                    Email = "admin@example.com",
+                    FullName = "Site Administrator"
+                };
+
+                var createPowerUser = await userManager.CreateAsync(newAdmin, "Admin123!");
+                if (createPowerUser.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "Admin");
+                }
+            }
+        }
+
         public static void Initialize(AppDbContext context)
         {
             if (context.Students.Any() || context.Departments.Any())

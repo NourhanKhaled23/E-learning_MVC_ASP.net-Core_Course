@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WebApplication1.Models;
 using WebApplication1.Services;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Repositories;
 using WebApplication1.Filters;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         private readonly IRepository<Student> _studentRepo;
@@ -27,6 +30,7 @@ namespace WebApplication1.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin, Instructor")]
         public IActionResult GetAll()
         {
             var students = _studentRepo.GetAll();
@@ -41,7 +45,6 @@ namespace WebApplication1.Controllers
             return View(students);
         }
 
-        [ServiceFilter(typeof(StudentHeaderAuthorizationFilter))]
         public IActionResult Details(int id)
         {
             var student = _studentRepo.GetFirstOrDefault(s => s.Ssn == id, "Department", "Enrollments.Course");
@@ -59,6 +62,7 @@ namespace WebApplication1.Controllers
                 DepartmentName = student.Department?.Name ?? "N/A",
                 Courses = student.Enrollments.Select(e => new StudentCourseViewModel
                 {
+                    CourseId = e.CourseId,
                     CourseName = e.Course?.Name ?? "Unknown",
                     Degree = e.Degree,
                     MinDegree = e.Course?.MinDegree ?? 0
@@ -77,6 +81,7 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name");
@@ -84,6 +89,8 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             CreateStudentViewModel model,
             [FromKeyedServices("email")] INotificationService emailNotificationService,
@@ -116,7 +123,8 @@ namespace WebApplication1.Controllers
                     Age = model.Age,
                     Address = model.Address,
                     Email = model.Email,
-                    Image = imagePath
+                    Image = imagePath,
+                    DeptId = model.DeptId
                 };
 
                 _studentRepo.Add(student);
@@ -135,6 +143,7 @@ namespace WebApplication1.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var student = _studentRepo.GetById(id);
@@ -156,6 +165,8 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, StudentEditViewModel model)
         {
             if (id != model.Ssn) return NotFound();
@@ -197,6 +208,63 @@ namespace WebApplication1.Controllers
 
             ViewBag.Departments = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_deptRepo.GetAll(), "DeptId", "Name", model.DeptId);
             return View(model);
+        }
+
+        [Authorize(Roles = "Student")]
+        public IActionResult MyProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var student = _studentRepo.GetFirstOrDefault(s => s.ApplicationUserId == userId, "Department", "Enrollments.Course");
+            if (student == null) return NotFound("Student profile not found. Please contact administration.");
+
+            var model = new StudentDetailsViewModel
+            {
+                Ssn = student.Ssn,
+                Name = student.Name,
+                Age = student.Age,
+                Email = student.Email,
+                Address = student.Address,
+                Image = student.Image,
+                DepartmentName = student.Department?.Name ?? "N/A",
+                Courses = student.Enrollments.Select(e => new StudentCourseViewModel
+                {
+                    CourseId = e.CourseId,
+                    CourseName = e.Course?.Name ?? "Unknown",
+                    Degree = e.Degree,
+                    MinDegree = e.Course?.MinDegree ?? 0
+                }).ToList()
+            };
+
+            return View("Details", model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(int id)
+        {
+            var student = _studentRepo.GetById(id);
+            if (student == null) return NotFound();
+            return View(student);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var student = _studentRepo.GetById(id);
+            if (student != null)
+            {
+                if (!string.IsNullOrEmpty(student.Image) && student.Image != "default-avatar.png" && student.Image != "placeholder.svg")
+                {
+                    _fileUploadService.DeleteImage(student.Image);
+                }
+
+                _studentRepo.Delete(id);
+                TempData["Success"] = "Student deleted successfully!";
+            }
+            return RedirectToAction(nameof(GetAll));
         }
     }
 }

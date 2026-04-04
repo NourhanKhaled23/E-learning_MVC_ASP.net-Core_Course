@@ -15,7 +15,11 @@
                         <th class="px-4 py-3 border-0">Course Name</th>
                         <th class="py-3 border-0">Min Degree</th>
                         <th class="py-3 text-center border-0">Score</th>
-                        <th class="py-3 text-center border-0">Status</th>
+                         <th class="py-3 text-center border-0">Status</th>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
+                        {
+                            <th class="py-3 text-center border-0">Actions</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -38,13 +42,23 @@
                                 <td class="text-center">
                                     <span class="badge @item.BadgeClass px-3 py-2 rounded-pill shadow-sm" style="min-width: 90px;">@item.StatusText</span>
                                 </td>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
+                                {
+                                    <td class="text-center">
+                                        <a asp-controller="Enrollment" asp-action="Delete" 
+                                           asp-route-studentSsn="@ViewBag.StudentSsn" asp-route-courseId="@item.CourseId"
+                                           class="btn btn-sm btn-outline-danger px-3 rounded-pill shadow-sm">
+                                            <i class="fas fa-user-minus me-1"></i> Unenroll
+                                        </a>
+                                    </td>
+                                }
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
+                            <td colspan="@(User.IsInRole("Admin") || User.IsInRole("Instructor") ? 5 : 4)" class="text-center py-5 text-muted">
                                 <div class="empty-state text-center py-5">
                                     <div class="mb-3 text-muted">
                                         <i class="fas fa-folder-open display-4 opacity-50"></i>

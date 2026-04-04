@@ -1,0 +1,55 @@
+@model WebApplication1.Models.Student
+
+@{
+    ViewData["Title"] = "Delete Student";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Confirm Deletion</h3>
+                </div>
+                <div class="card-body py-4">
+                    <h4 class="text-center mb-4">Are you sure you want to delete this student?</h4>
+                    <p class="text-center text-muted">This action cannot be undone and will permanently remove all associated data.</p>
+                    <hr />
+                    
+                    <div class="row px-4">
+                        <div class="col-sm-4 text-center">
+                            <img src="/uploads/students/@(Model.Image ?? "default-avatar.png")" 
+                                 class="rounded-circle shadow-sm mb-3" 
+                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                 onerror="this.src='/uploads/students/default-avatar.png';" />
+                        </div>
+                        <div class="col-sm-8 d-flex flex-column justify-content-center">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Full Name</dt>
+                                <dd class="col-sm-8 fw-bold">@Model.Name</dd>
+
+                                <dt class="col-sm-4">Email</dt>
+                                <dd class="col-sm-8">@Model.Email</dd>
+                                
+                                <dt class="col-sm-4">SSN</dt>
+                                <dd class="col-sm-8">@Model.Ssn</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-between py-3">
+                    <a asp-action="GetAll" class="btn btn-outline-secondary px-4 rounded-pill shadow-sm">
+                        <i class="fas fa-arrow-left me-1"></i> Cancel
+                    </a>
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Ssn" name="id" />
+                        <button type="submit" class="btn btn-danger px-4 rounded-pill shadow-sm">
+                            <i class="fas fa-trash-alt me-1"></i> Confirm Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
